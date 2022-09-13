@@ -1,36 +1,44 @@
 <template>
-  <div class="q-pa-md">
-    <q-table
-      grid
-      title="Students"
-      :columns="columns"
-      :rows="characters"
-      row-key="id"
-      :loading="loading"
-      :visible-columns="visibleColumns"
-      :rows-per-page-options="rowsPerPageOptions"
-      :pagination="pagination"
-    >
-      <template v-slot:item="{ row }">
-        <div class="q-pa-xs">
-          <q-card style="min-width: 130px; max-width: 130px;">
-            <img
-              :src="characterImages[row.name]['avatar']"
+  <div class="q-pa-md row justify-center">
+    <div class="q-gutter-xs" style="width: 100%; max-width: 1024px">
+      <q-table
+        grid
+        :columns="columns"
+        :rows="characters"
+        row-key="id"
+        :loading="loading"
+        :visible-columns="visibleColumns"
+        hide-header
+        :rows-per-page-options="rowsPerPageOptions"
+        :pagination="pagination"
+      >
+        <template v-slot:item="{ row }">
+          <q-card class="character-card-size q-ma-sm column">
+            <q-img
+              :src="generateThumbImages(characterImages[row.name]['avatar'])"
               :alt="`${row.name}'s Avatar'`"
-              style="min-width: 130px; max-width: 130px;"
+              loading="lazy"
             />
-            <q-card-section class="text-center">
+            <q-card-section class="text-center col-grow column justify-center">
               {{ row.name }}
             </q-card-section>
           </q-card>
-        </div>
-      </template>
-    </q-table>
+        </template>
+      </q-table>
+    </div>
   </div>
+  <div class="q-pa-md"></div>
 </template>
 
+<style scoped>
+  .character-card-size {
+    min-width: 150px;
+    max-width: 150px;
+  }
+</style>
+
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted } from 'vue'
 
 export default defineComponent({
   name: 'CharacterList',
@@ -61,17 +69,32 @@ export default defineComponent({
     ]
 
     const visibleColumns: string[] = ['name']
-    const rowsPerPageOptions: number[] = [5, 10, 15, 20, 25, 0]
+    const rowsPerPageOptions: number[] = [6, 12, 18, 24, 30, 0]
     const pagination: object = {
-      rowsPerPage: 10
+      rowsPerPage: 12
     }
+    const tableJustifyCenter = () => {
+      const tableGrid = document.querySelector('.q-table__grid-content')
+      tableGrid?.classList.add('justify-center')
+      tableGrid?.classList.add('items-stretch')
+    }
+
+    const generateThumbImages = (url: string) => {
+      const newUrl = url.replace(/bluearchivewiki/, 'bluearchivewiki/thumb')
+      return `${newUrl}/150px-${url.substring(url.lastIndexOf('/') + 1)}`
+    }
+
+    onMounted(() => {
+      tableJustifyCenter()
+    })
 
     return {
       props,
       columns,
       visibleColumns,
       rowsPerPageOptions,
-      pagination
+      pagination,
+      generateThumbImages
     }
   }
 })
