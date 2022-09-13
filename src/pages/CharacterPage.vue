@@ -12,6 +12,7 @@
 import CharacterList from 'components/CharacterList.vue'
 import { defineComponent, computed } from 'vue'
 import { useCharacterStore } from 'src/stores/character-store'
+import { useMetaStore } from 'src/stores/meta-store'
 
 export default defineComponent({
   name: 'CharacterPage',
@@ -20,10 +21,13 @@ export default defineComponent({
     const characterStore = useCharacterStore()
     const loading = computed(() => characterStore.charactersLoading)
     if (characterStore.characters.length <= 0) {
-      characterStore.dispatchCharacters()
+      characterStore.setCharacters()
     }
     const characters = computed(() => characterStore.characters)
     const characterImages = computed(() => characterStore.characterImages)
+
+    const metaStore = useMetaStore()
+    metaStore.setMetaData('Character', 'Test 3')
 
     return { characters, characterImages, loading }
   }
