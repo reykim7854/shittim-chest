@@ -7,7 +7,6 @@
       <q-tabs
         v-model="tab"
         align="justify"
-        dense
         :breakpoint="0"
       >
         <q-route-tab
@@ -36,7 +35,7 @@ const tabs = [
 ]
 
 export default defineComponent({
-  name: 'MobileLayout',
+  name: 'MainLayout',
 
   components: {},
 
