@@ -27,7 +27,7 @@ export default defineComponent({
     const characterImages = computed(() => characterStore.characterImages)
 
     const metaStore = useMetaStore()
-    metaStore.setMetaData('Character', 'Test 3')
+    metaStore.setMetaData('Characters', 'List of available characters in Blue Archive global version')
 
     return { characters, characterImages, loading }
   }
