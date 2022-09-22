@@ -1,7 +1,9 @@
 <template>
   <q-layout view="lHh lpR lFf">
-    <q-page-container>
-      <router-view />
+    <q-page-container class="q-pa-md row justify-center">
+      <div style="width: 100%; max-width: 1024px">
+        <router-view />
+      </div>
     </q-page-container>
     <q-footer color="00d7fb">
       <q-tabs
@@ -17,6 +19,9 @@
         />
       </q-tabs>
     </q-footer>
+    <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+      <q-btn fab icon="keyboard_arrow_up" color="primary" />
+    </q-page-scroller>
   </q-layout>
 </template>
 
