@@ -13,6 +13,7 @@
 import { Todo, Meta } from 'components/models'
 import ExampleComponent from 'components/ExampleComponent.vue'
 import { defineComponent, ref } from 'vue'
+import { useMetaStore } from 'src/stores/meta-store'
 
 export default defineComponent({
   name: 'IndexPage',
@@ -43,6 +44,9 @@ export default defineComponent({
     const meta = ref<Meta>({
       totalCount: 1200
     })
+
+    const metaStore = useMetaStore()
+    metaStore.setMetaData('Home', 'Welcome to Shittim Chest! A Blue Archive Interactive App')
 
     return { todos, meta }
   }

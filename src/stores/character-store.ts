@@ -13,7 +13,7 @@ export const useCharacterStore = defineStore('character', {
     getCharacterImages: (state) => state.characterImages
   },
   actions: {
-    async dispatchCharacters () {
+    async setCharacters () {
       try {
         this.$patch({ charactersLoading: true })
         const { data: { data }, status } = await api.get('/character')
@@ -23,7 +23,7 @@ export const useCharacterStore = defineStore('character', {
             charactersLoading: false
           })
         } else {
-          console.error('test aja')
+          console.error('Failed to fetch character list')
         }
       } catch (error) {
         console.error(error)
