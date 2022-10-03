@@ -4,7 +4,7 @@ name: CI
 
 on:
   push:
-    branches: [develop]
+    branches: ['develop']
 
 jobs:
   build:
@@ -15,11 +15,11 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: '16.x'
+          cache: 'npm'
       - run: npm install
       - run: npm run build
-
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v4
+      - uses: JamesIves/github-pages-deploy-action@releases/v4
         with:
           ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
           BRANCH: gh-pages
