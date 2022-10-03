@@ -15,29 +15,36 @@
       :filter-method="filterMethod"
     >
       <template v-slot:top>
-        <q-input
-          standout
-          debounce="300"
-          v-model="name"
-          placeholder="Search Student Name"
-          style="width: 100%"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
-        </q-input>
+        <div class="filter-wrapper row">
+          <div class="q-pa-xs col-12 col-sm-7">
+            <q-input
+              standout
+              debounce="300"
+              v-model="name"
+              placeholder="Search Student Name"
+            >
+              <template v-slot:append>
+                <q-icon name="search" />
+              </template>
+            </q-input>
+          </div>
 
-        <q-tabs
-          v-model="squadType"
-          inline-label
-          mobile-arrows
-          outside-arrows
-          style="width: 100%"
-        >
-          <q-tab name="all" label="All" />
-          <q-tab name="striker" label="Striker" />
-          <q-tab name="special" label="Special" />
-        </q-tabs>
+          <div class="q-pa-xs col-12 col-sm-5 row align-center">
+            <q-btn-toggle
+              v-model="squadType"
+              spread
+              no-caps
+              rounded
+              unelevated
+              class="btn-toggle"
+              :options="[
+                { label: 'All', value: 'all' },
+                { label: 'Striker', value: 'striker' },
+                { label: 'Special', value: 'special' }
+              ]"
+            />
+          </div>
+        </div>
       </template>
       <template v-slot:item="{ row }">
         <q-card class="character-card-size column q-ma-sm">
@@ -58,11 +65,13 @@
   </div>
 </template>
 
-<style scoped>
-.character-card-size {
-  min-width: 150px;
-  max-width: 150px;
-}
+<style lang="sass" scoped>
+.character-card-size
+  min-width: 150px
+  max-width: 150px
+
+.filter-wrapper
+  width: 100%
 </style>
 
 <script lang="ts">
