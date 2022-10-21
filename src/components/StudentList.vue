@@ -3,7 +3,7 @@
     <q-table
       grid
       :columns="columns"
-      :rows="characters"
+      :rows="students"
       row-key="id"
       :loading="loading"
       :visible-columns="visibleColumns"
@@ -16,46 +16,75 @@
     >
       <template v-slot:top>
         <div class="filter-wrapper row">
-          <div class="q-pa-xs col-12 col-sm-7">
+          <div class="col-12 col-sm-7 col-md-5">
             <q-input
               standout
-              debounce="300"
               v-model="name"
+              debounce="300"
               placeholder="Search Student Name"
+              rounded
             >
-              <template v-slot:append>
+              <template v-slot:prepend>
                 <q-icon name="search" />
               </template>
             </q-input>
           </div>
-
-          <div class="q-pa-xs col-12 col-sm-5 row align-center">
-            <q-btn-toggle
-              v-model="squadType"
-              spread
+          <div
+            class="q-mt-md q-mt-sm-none col-12 col-sm-5 col-md-7 row align-center"
+            :class="{
+              'justify-end': screenGreaterThanSmall,
+              'justify-evenly': !screenGreaterThanSmall
+            }"
+          >
+            <q-btn
               no-caps
+              class="q-mr-xs"
+              label="Filters"
+              icon="filter_list"
+              color="primary"
               rounded
               unelevated
-              class="btn-toggle"
-              :options="[
-                { label: 'All', value: 'all' },
-                { label: 'Striker', value: 'striker' },
-                { label: 'Special', value: 'special' }
-              ]"
+              :ripple="false"
             />
+            <button-sort class="q-ml-xs" :sort-values="columns"></button-sort>
           </div>
         </div>
       </template>
       <template v-slot:item="{ row }">
-        <q-card class="character-card-size column q-ma-sm">
+        <q-card class="student-card-size column q-ma-sm">
           <q-img
-            :src="generateThumbImages(characterImages[row.name]['avatar'])"
+            :src="generateThumbImages(studentImages[row.name]['avatar'])"
             :alt="`${row.name}'s Avatar'`"
             loading="lazy"
-          />
+          >
+            <template v-slot:default>
+              <div
+                class="img-caption absolute-bottom text-center text-subtitle2"
+              >
+                <q-icon
+                  v-for="n in row.baseStar"
+                  :key="`star-${n}`"
+                  name="star"
+                  color="yellow"
+                />
+              </div>
+            </template>
+
+            <template v-slot:loading>
+              <div class="text-subtitle1 text-white">Loading...</div>
+            </template>
+
+            <template v-slot:error>
+              <div
+                class="absolute-full flex flex-center bg-negative text-white"
+              >
+                Cannot load image
+              </div>
+            </template>
+          </q-img>
           <q-card-section
             style="white-space: pre-wrap"
-            class="text-h6 text-center col-grow column justify-center"
+            class="text-center col-grow column justify-center text-subtitle1"
           >
             {{ formatName(row.name) }}
           </q-card-section>
@@ -66,25 +95,33 @@
 </template>
 
 <style lang="sass" scoped>
-.character-card-size
+.student-card-size
   min-width: 150px
   max-width: 150px
 
 .filter-wrapper
   width: 100%
+
+.img-caption
+  padding: 8px
 </style>
 
 <script lang="ts">
 import { defineComponent, ref, computed, onMounted } from 'vue'
+import { useQuasar } from 'quasar'
+import ButtonSort from 'components/ButtonSort.vue'
 
 export default defineComponent({
-  name: 'CharacterList',
+  name: 'StudentList',
+  components: {
+    ButtonSort
+  },
   props: {
-    characters: {
+    students: {
       type: Array,
       default: () => Array
     },
-    characterImages: {
+    studentImages: {
       type: Object,
       default: () => Object
     },
@@ -108,6 +145,13 @@ export default defineComponent({
         required: true,
         label: 'Squad Type',
         field: (row: { squadType: string }) => row.squadType,
+        sortable: false
+      },
+      {
+        name: 'baseStar',
+        required: true,
+        label: 'Star',
+        field: (row: { baseStar: string }) => row.baseStar,
         sortable: true
       }
     ]
@@ -120,20 +164,54 @@ export default defineComponent({
 
     // filter block start
     const name = ref('')
-    const squadType = ref('all')
+    const squadType = ref('')
     const filter = computed(() => {
       return { name, squadType }
     })
 
     const filterMethod = (rows: readonly any[], terms: any) => {
-      return rows.filter((row) => {
+      const filtered = rows.filter((row) => {
         const filtered: boolean[] = [
-          row.name.toLowerCase().includes(terms.name.value.toLowerCase()),
-          terms.squadType.value.toLowerCase() === 'all' ||
+          terms.name.value === ''
+            ? true
+            : row.name.toLowerCase().includes(terms.name.value.toLowerCase()),
+          terms.squadType.value.toLowerCase() === '' ||
             row.squadType.toLowerCase() === terms.squadType.value.toLowerCase()
         ]
         return filtered.every((value) => value === true)
       })
+
+      // if (isAsc.value) {
+      //   filtered.sort((a, b) => {
+      //     const valueA = a[sortBy.value]
+      //     const valueB = b[sortBy.value]
+
+      //     if (valueA < valueB) {
+      //       return -1
+      //     }
+      //     if (valueA > valueB) {
+      //       return 1
+      //     }
+
+      //     return 0
+      //   })
+      // } else {
+      //   filtered.sort((a, b) => {
+      //     const valueA = a[sortBy.value]
+      //     const valueB = b[sortBy.value]
+
+      //     if (valueA < valueB) {
+      //       return 1
+      //     }
+      //     if (valueA > valueB) {
+      //       return -1
+      //     }
+
+      //     return 0
+      //   })
+      // }
+
+      return filtered
     }
     // filter block end
 
@@ -151,6 +229,9 @@ export default defineComponent({
     }
     // format table content end
 
+    const $q = useQuasar()
+    const screenGreaterThanSmall = computed(() => $q.screen.gt.sm)
+
     onMounted(() => {
       tableJustifyCenter()
     })
@@ -166,7 +247,8 @@ export default defineComponent({
       rowsPerPageOptions,
       pagination,
       generateThumbImages,
-      formatName
+      formatName,
+      screenGreaterThanSmall
     }
   }
 })
