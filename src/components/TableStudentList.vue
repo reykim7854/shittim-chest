@@ -29,6 +29,7 @@
               </template>
             </q-input>
           </div>
+
           <div
             class="q-mt-md q-mt-sm-none col-12 col-sm-5 col-md-7 row align-center"
             :class="{
@@ -44,12 +45,18 @@
               color="primary"
               rounded
               unelevated
-              :ripple="false"
             />
-            <button-sort class="q-ml-xs" :sort-values="columns"></button-sort>
+
+            <button-sort
+              class="q-ml-xs"
+              :sort-values="columns"
+              @sort-by="(val) => (sortBy = val)"
+              @is-asc="(val) => (isAsc = val)"
+            ></button-sort>
           </div>
         </div>
       </template>
+
       <template v-slot:item="{ row }">
         <q-card class="student-card-size column q-ma-sm">
           <q-img
@@ -165,6 +172,8 @@ export default defineComponent({
     // filter block start
     const name = ref('')
     const squadType = ref('')
+    const sortBy = ref('name')
+    const isAsc = ref(true)
     const filter = computed(() => {
       return { name, squadType }
     })
@@ -181,35 +190,35 @@ export default defineComponent({
         return filtered.every((value) => value === true)
       })
 
-      // if (isAsc.value) {
-      //   filtered.sort((a, b) => {
-      //     const valueA = a[sortBy.value]
-      //     const valueB = b[sortBy.value]
+      if (isAsc.value) {
+        filtered.sort((a, b) => {
+          const valueA = a[sortBy.value]
+          const valueB = b[sortBy.value]
 
-      //     if (valueA < valueB) {
-      //       return -1
-      //     }
-      //     if (valueA > valueB) {
-      //       return 1
-      //     }
+          if (valueA < valueB) {
+            return -1
+          }
+          if (valueA > valueB) {
+            return 1
+          }
 
-      //     return 0
-      //   })
-      // } else {
-      //   filtered.sort((a, b) => {
-      //     const valueA = a[sortBy.value]
-      //     const valueB = b[sortBy.value]
+          return 0
+        })
+      } else {
+        filtered.sort((a, b) => {
+          const valueA = a[sortBy.value]
+          const valueB = b[sortBy.value]
 
-      //     if (valueA < valueB) {
-      //       return 1
-      //     }
-      //     if (valueA > valueB) {
-      //       return -1
-      //     }
+          if (valueA < valueB) {
+            return 1
+          }
+          if (valueA > valueB) {
+            return -1
+          }
 
-      //     return 0
-      //   })
-      // }
+          return 0
+        })
+      }
 
       return filtered
     }
@@ -240,6 +249,8 @@ export default defineComponent({
       props,
       name,
       squadType,
+      sortBy,
+      isAsc,
       filter,
       filterMethod,
       columns,
