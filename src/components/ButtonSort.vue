@@ -8,19 +8,18 @@
       color="primary"
       rounded
       unelevated
-      :ripple="false"
     >
       <q-menu fit anchor="bottom left" self="top left">
         <q-list>
           <q-item
             clickable
             v-close-popup
-            v-for="(sort, i) in sortValues"
+            v-for="(sortValue, i) in sortValues"
             :key="`sort-by-${i}`"
-            @click="sortBy = sort.name"
-            :active="true"
+            @click="sortedBy(sortValue.name)"
+            :active="sortBy === sortValue.name"
           >
-            <q-item-section>{{ sort.label }}</q-item-section>
+            <q-item-section>{{ sortValue.label }}</q-item-section>
           </q-item>
         </q-list>
       </q-menu>
@@ -31,7 +30,7 @@
       :icon="isAsc ? 'arrow_downward' : 'arrow_upward'"
       class="col-3 btn-sort"
       unelevated
-      @click="isAsc = !isAsc"
+      @click="sorted(isAsc)"
       :ripple="false"
     />
   </div>
@@ -51,6 +50,7 @@
 import { defineComponent, PropType, ref } from 'vue'
 
 export default defineComponent({
+  emits: ['sortBy', 'isAsc'],
   props: {
     sortValues: {
       type: Array as PropType<any[]>,
@@ -58,13 +58,25 @@ export default defineComponent({
       default: () => Array
     }
   },
-  setup(props) {
-    const sortBy = ref('baseStar')
+  setup(props, { emit }) {
+    const sortBy = ref('name')
     const isAsc = ref(true)
+
+    const sortedBy = (val: string) => {
+      sortBy.value = val
+      emit('sortBy', sortBy.value)
+    }
+
+    const sorted = (val: boolean) => {
+      isAsc.value = !val
+      emit('isAsc', isAsc.value)
+    }
 
     return {
       props,
       sortBy,
+      sortedBy,
+      sorted,
       isAsc
     }
   }
