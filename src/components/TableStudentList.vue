@@ -6,11 +6,10 @@
       :rows="students"
       row-key="id"
       :loading="loading"
-      :visible-columns="visibleColumns"
       hide-header
+      :visible-columns="visibleColumns"
       :rows-per-page-options="rowsPerPageOptions"
       :pagination="pagination"
-      hide-bottom
       :filter="filter"
       :filter-method="filterMethod"
     >
@@ -29,7 +28,6 @@
               </template>
             </q-input>
           </div>
-
           <div
             class="q-mt-md q-mt-sm-none col-12 col-sm-5 col-md-7 row align-center"
             :class="{
@@ -37,50 +35,45 @@
               'justify-evenly': !screenGreaterThanSmall
             }"
           >
-            <q-btn
-              no-caps
-              class="q-mr-xs"
-              label="Filters"
-              icon="filter_list"
-              color="primary"
-              rounded
-              unelevated
+            <button-filter
+              v-model:squad-type="squadType"
+              v-model:base-star="baseStar"
             />
-
             <button-sort
               class="q-ml-xs"
               :sort-values="columns"
-              @sort-by="(val) => (sortBy = val)"
-              @is-asc="(val) => (isAsc = val)"
-            ></button-sort>
+              v-model:sort-by="sortBy"
+              v-model:is-asc="isAsc"
+            />
           </div>
         </div>
       </template>
-
       <template v-slot:item="{ row }">
         <q-card class="student-card-size column q-ma-sm">
           <q-img
             :src="generateThumbImages(studentImages[row.name]['avatar'])"
             :alt="`${row.name}'s Avatar'`"
+            height="169px"
             loading="lazy"
           >
             <template v-slot:default>
               <div
                 class="img-caption absolute-bottom text-center text-subtitle2"
               >
-                <q-icon
-                  v-for="n in row.baseStar"
-                  :key="`star-${n}`"
-                  name="star"
-                  color="yellow"
-                />
+                <template v-if="sortBy === 'baseStar' || sortBy === 'name'">
+                  <q-icon
+                    v-for="n in row.baseStar"
+                    :key="`star-${n}`"
+                    name="star"
+                    color="yellow"
+                  />
+                </template>
+                <template v-else>{{ row[sortBy] }}</template>
               </div>
             </template>
-
             <template v-slot:loading>
               <div class="text-subtitle1 text-white">Loading...</div>
             </template>
-
             <template v-slot:error>
               <div
                 class="absolute-full flex flex-center bg-negative text-white"
@@ -111,17 +104,20 @@
 
 .img-caption
   padding: 8px
+  background-color: rgba(0, 0, 0, 0.7)
 </style>
 
 <script lang="ts">
-import { defineComponent, ref, computed, onMounted } from 'vue'
+import { defineComponent, ref, Ref, computed, onMounted } from 'vue'
 import { useQuasar } from 'quasar'
 import ButtonSort from 'components/ButtonSort.vue'
+import ButtonFilter from 'components/ButtonFilter.vue'
 
 export default defineComponent({
   name: 'StudentList',
   components: {
-    ButtonSort
+    ButtonSort,
+    ButtonFilter
   },
   props: {
     students: {
@@ -152,30 +148,66 @@ export default defineComponent({
         required: true,
         label: 'Squad Type',
         field: (row: { squadType: string }) => row.squadType,
-        sortable: false
+        sortable: true
       },
       {
         name: 'baseStar',
         required: true,
-        label: 'Star',
-        field: (row: { baseStar: string }) => row.baseStar,
+        label: 'Base Star',
+        field: (row: { baseStar: number }) => row.baseStar,
+        sortable: true
+      },
+      {
+        name: 'armorType',
+        required: true,
+        label: 'Armor Type',
+        field: (row: { armorType: string }) => row.armorType,
+        sortable: true
+      },
+      {
+        name: 'bulletType',
+        required: true,
+        label: 'Bullet Type',
+        field: (row: { bulletType: string }) => row.bulletType,
+        sortable: true
+      },
+      {
+        name: 'position',
+        required: true,
+        label: 'Position',
+        field: (row: { position: string }) => row.position,
+        sortable: true
+      },
+      {
+        name: 'role',
+        required: true,
+        label: 'Role',
+        field: (row: { role: string }) => row.role,
+        sortable: true
+      },
+      {
+        name: 'weaponType',
+        required: true,
+        label: 'Weapon Type',
+        field: (row: { weaponType: string }) => row.weaponType,
         sortable: true
       }
     ]
 
     const visibleColumns: string[] = ['name']
-    const rowsPerPageOptions: number[] = [0]
+    const rowsPerPageOptions: number[] = [12, 18, 24, 30]
     const pagination: object = {
-      rowsPerPage: 0
+      rowsPerPage: 18
     }
 
     // filter block start
-    const name = ref('')
-    const squadType = ref('')
+    const name: Ref<string> = ref('')
+    const squadType: Ref<string> = ref('')
+    const baseStar: Ref<number[]> = ref([3, 2, 1])
     const sortBy = ref('name')
     const isAsc = ref(true)
     const filter = computed(() => {
-      return { name, squadType }
+      return { name, squadType, baseStar }
     })
 
     const filterMethod = (rows: readonly any[], terms: any) => {
@@ -185,7 +217,8 @@ export default defineComponent({
             ? true
             : row.name.toLowerCase().includes(terms.name.value.toLowerCase()),
           terms.squadType.value.toLowerCase() === '' ||
-            row.squadType.toLowerCase() === terms.squadType.value.toLowerCase()
+            row.squadType.toLowerCase() === terms.squadType.value.toLowerCase(),
+          terms.baseStar.value.includes(row.baseStar)
         ]
         return filtered.every((value) => value === true)
       })
@@ -249,6 +282,7 @@ export default defineComponent({
       props,
       name,
       squadType,
+      baseStar,
       sortBy,
       isAsc,
       filter,

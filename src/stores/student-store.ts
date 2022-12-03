@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
 import { api } from 'boot/axios'
 import studentImages from 'src/assets/student-images.json'
+import { StudentListAttributes } from 'src/models/StudentModel'
 
 export const useStudentStore = defineStore('student', {
   state: () => ({
-    students: [],
+    students: [] as StudentListAttributes[],
     studentImages,
     studentsLoading: false
   }),
@@ -26,7 +27,7 @@ export const useStudentStore = defineStore('student', {
             studentsLoading: false
           })
         } else {
-          console.error('Failed to fetch student list')
+          throw new Error('Failed to fetch student list')
         }
       } catch (error) {
         console.error(error)

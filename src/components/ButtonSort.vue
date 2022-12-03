@@ -16,7 +16,7 @@
             v-close-popup
             v-for="(sortValue, i) in sortValues"
             :key="`sort-by-${i}`"
-            @click="sortedBy(sortValue.name)"
+            @click="emit('update:sortBy', sortValue.name)"
             :active="sortBy === sortValue.name"
           >
             <q-item-section>{{ sortValue.label }}</q-item-section>
@@ -30,8 +30,7 @@
       :icon="isAsc ? 'arrow_downward' : 'arrow_upward'"
       class="col-3 btn-sort"
       unelevated
-      @click="sorted(isAsc)"
-      :ripple="false"
+      @click="emit('update:isAsc', !isAsc)"
     />
   </div>
 </template>
@@ -47,37 +46,31 @@
 </style>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 export default defineComponent({
-  emits: ['sortBy', 'isAsc'],
+  emits: ['update:sortBy', 'update:isAsc'],
   props: {
     sortValues: {
       type: Array as PropType<any[]>,
       required: true,
       default: () => Array
+    },
+    sortBy: {
+      type: String,
+      required: true,
+      default: 'name'
+    },
+    isAsc: {
+      type: Boolean,
+      required: true,
+      default: true
     }
   },
   setup(props, { emit }) {
-    const sortBy = ref('name')
-    const isAsc = ref(true)
-
-    const sortedBy = (val: string) => {
-      sortBy.value = val
-      emit('sortBy', sortBy.value)
-    }
-
-    const sorted = (val: boolean) => {
-      isAsc.value = !val
-      emit('isAsc', isAsc.value)
-    }
-
     return {
       props,
-      sortBy,
-      sortedBy,
-      sorted,
-      isAsc
+      emit
     }
   }
 })
