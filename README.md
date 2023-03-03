@@ -11,7 +11,7 @@ Development: [https://reykim7854.github.io/#/shittim-chest](https://reykim7854.g
 ## Install the dependencies
 
 ```bash
-yarn
+pnpm install
 # or
 npm install
 ```
@@ -19,15 +19,15 @@ npm install
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 
 ```bash
-yarn dev
+npx quasar dev
 # or
-npm run dev
+quasar dev
 ```
 
 ### Lint the files
 
 ```bash
-yarn lint
+pnpm run lint
 # or
 npm run lint
 ```
@@ -35,9 +35,9 @@ npm run lint
 ### Build the app for production
 
 ```bash
-yarn build
+npx quasar build
 # or
-npm run build
+quasar build
 ```
 
 ### Customize the configuration
