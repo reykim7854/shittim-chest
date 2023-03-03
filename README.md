@@ -4,20 +4,22 @@ A Blue Archive Interactive App
 
 ## Install the dependencies
 ```bash
-yarn
+pnpm install
 # or
 npm install
 ```
 
 ### Start the app in development mode (hot-code reloading, error reporting, etc.)
 ```bash
+npx quasar dev
+# or
 quasar dev
 ```
 
 
 ### Lint the files
 ```bash
-yarn lint
+pnpm run lint
 # or
 npm run lint
 ```
@@ -26,6 +28,8 @@ npm run lint
 
 ### Build the app for production
 ```bash
+npx quasar build
+# or
 quasar build
 ```
 
