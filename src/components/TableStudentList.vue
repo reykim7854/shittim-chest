@@ -36,8 +36,9 @@
             }"
           >
             <button-filter
-              v-model:squad-type="squadType"
-              v-model:base-star="baseStar"
+              :squad-type-prop="squadType"
+              :base-star-prop="baseStar"
+              @save-filter="handleSaveFilter"
             />
             <button-sort
               class="q-ml-xs"
@@ -210,6 +211,11 @@ export default defineComponent({
       return { name, squadType, baseStar }
     })
 
+    const handleSaveFilter = (value: any) => {
+      squadType.value = value.squadType
+      baseStar.value = value.baseStar
+    }
+
     const filterMethod = (rows: readonly any[], terms: any) => {
       const filtered = rows.filter((row) => {
         const filtered: boolean[] = [
@@ -286,6 +292,7 @@ export default defineComponent({
       sortBy,
       isAsc,
       filter,
+      handleSaveFilter,
       filterMethod,
       columns,
       visibleColumns,
