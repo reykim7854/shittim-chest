@@ -1,15 +1,23 @@
+<style lang="sass" scoped>
+.btn-sort-by
+  border-bottom-right-radius: 0
+  border-top-right-radius: 0
+
+.btn-sort
+  border-bottom-left-radius: 0
+  border-top-left-radius: 0
+</style>
+
 <template>
-  <div class="row">
+  <div class="row q-ma-xs">
     <q-btn
       no-caps
       class="col-9 btn-sort-by text-capitalize"
       icon="sort"
-      label="Sort"
+      :label="buttonLabel"
       color="primary"
-      rounded
-      unelevated
     >
-      <q-menu fit anchor="bottom left" self="top left">
+      <q-menu fit anchor="bottom left" self="top left" max-height="250px">
         <q-list>
           <q-item
             clickable
@@ -25,28 +33,16 @@
       </q-menu>
     </q-btn>
     <q-btn
-      rounded
       color="primary"
       :icon="isAsc ? 'arrow_downward' : 'arrow_upward'"
       class="col-3 btn-sort"
-      unelevated
       @click="emit('update:isAsc', !isAsc)"
     />
   </div>
 </template>
 
-<style lang="sass" scoped>
-.btn-sort-by
-  border-bottom-right-radius: 0
-  border-top-right-radius: 0
-
-.btn-sort
-  border-bottom-left-radius: 0
-  border-top-left-radius: 0
-</style>
-
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, PropType, computed, Ref } from 'vue'
 
 export default defineComponent({
   emits: ['update:sortBy', 'update:isAsc'],
@@ -68,9 +64,14 @@ export default defineComponent({
     }
   },
   setup(props, { emit }) {
+    const buttonLabel: Ref<string> = computed(
+      () => props.sortValues.find((e) => e.name === props.sortBy).label
+    )
+
     return {
       props,
-      emit
+      emit,
+      buttonLabel
     }
   }
 })
