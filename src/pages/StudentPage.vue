@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import StudentList from 'src/components/TableStudentList.vue'
+import StudentList from 'src/components/Student/TableStudentList.vue'
 import { defineComponent, computed } from 'vue'
 import { useStudentStore } from 'src/stores/student-store'
 import { useMetaStore } from 'src/stores/meta-store'
