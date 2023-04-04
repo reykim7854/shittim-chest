@@ -12,6 +12,9 @@
           :key="`tab-${i}`"
           :icon="tab.icon"
           :to="tab.to"
+          :name="tab.label"
+          :label="$q.screen.gt.sm ? tab.label : ''"
+          :ripple="false"
         />
       </q-tabs>
     </q-footer>
@@ -37,11 +40,13 @@ import { defineComponent, ref } from 'vue'
 const tabs = [
   {
     icon: 'home',
-    to: '/'
+    to: '/',
+    label: 'home'
   },
   {
     icon: 'badge',
-    to: '/characters'
+    to: '/student',
+    label: 'student'
   }
 ]
 
