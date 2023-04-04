@@ -9,6 +9,10 @@
   position: sticky
   bottom: 0
   background-color: inherit
+
+.filter-card
+  width: 100%
+  max-width: 600px
 </style>
 
 <template>
@@ -22,7 +26,7 @@
   />
 
   <q-dialog v-model="dialog" persistent>
-    <q-card>
+    <q-card class="filter-card">
       <q-card-section class="card-title">
         <div class="text-h6">Filters</div>
       </q-card-section>

@@ -16,13 +16,14 @@ interface StudentAttribute {
   profile: string
   rarity: string
   role: string
+  school: string
   squadType: string
   weaponType: string
 }
 
 interface StudentInfo {
   age: string
-  artis: string
+  artist: string
   club: string
   school: string
   schoolYear: string
@@ -72,6 +73,7 @@ interface StudentListAttributes {
   bulletType: string
   position: string
   role: string
+  school: string
   squadType: string
   weaponType: string
   terrain: StudentTerrain

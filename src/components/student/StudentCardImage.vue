@@ -11,7 +11,7 @@
 <template>
   <q-card class="student-card-size column q-ma-sm">
     <q-img
-      :src="generateThumbImages(studentImages[row.name]['avatar'])"
+      :src="generateThumbImages(row.name)"
       :alt="`${row.name}'s Avatar'`"
       height="169px"
       loading="lazy"
@@ -30,7 +30,7 @@
         </div>
       </template>
       <template v-slot:loading>
-        <div class="text-subtitle1 text-white">Loading...</div>
+        <q-spinner color="primary" />
       </template>
       <template v-slot:error>
         <div class="absolute-full flex flex-center bg-negative text-white">
@@ -51,7 +51,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'TableStudentCardImage',
+  name: 'StudentCardImage',
   props: {
     studentImages: {
       type: Object,
@@ -74,9 +74,20 @@ export default defineComponent({
     const formatSortByValue = (val: string) =>
       val.replace(/([a-z])([A-Z])/g, '$1 $2')
 
-    const generateThumbImages = (url: string) => {
-      const newUrl = url.replace(/bluearchivewiki/, 'bluearchivewiki/thumb')
-      return `${newUrl}/150px-${url.substring(url.lastIndexOf('/') + 1)}`
+    const checkStudentImages = (name: string) =>
+      props.studentImages[name] &&
+      Object.prototype.hasOwnProperty.call(props.studentImages[name], 'avatar')
+        ? props.studentImages[name].avatar
+        : false
+
+    const generateThumbImages = (name: string) => {
+      const url = checkStudentImages(name)
+      if (url) {
+        const newUrl = url.replace(/bluearchivewiki/, 'bluearchivewiki/thumb')
+        return `${newUrl}/150px-${url.substring(url.lastIndexOf('/') + 1)}`
+      }
+
+      return 'false'
     }
 
     return {

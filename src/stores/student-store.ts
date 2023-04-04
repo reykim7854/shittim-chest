@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { api } from 'boot/axios'
+import { getStudents } from 'src/api/student'
 import studentImages from 'src/assets/student-images.json'
 import { StudentListAttributes } from 'src/models/StudentModel'
 
@@ -20,11 +20,10 @@ export const useStudentStore = defineStore('student', {
         const {
           data: { data },
           status
-        } = await api.get('/character')
+        } = await getStudents()
         if (status < 300) {
           this.$patch({
-            students: data,
-            studentsLoading: false
+            students: data
           })
         } else {
           throw new Error('Failed to fetch student list')

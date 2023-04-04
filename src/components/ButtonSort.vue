@@ -50,7 +50,7 @@ export default defineComponent({
     sortValues: {
       type: Array as PropType<any[]>,
       required: true,
-      default: () => Array
+      default: () => []
     },
     sortBy: {
       type: String,
