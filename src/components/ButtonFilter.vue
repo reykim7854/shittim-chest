@@ -30,37 +30,43 @@
       <q-card-section class="card-title">
         <div class="text-h6">Filters</div>
       </q-card-section>
-
-      <div class="row">
-        <q-card-section
-          v-for="(value, key, index) in filter"
-          :key="`${key}-${index}`"
+      <q-card-section
+        v-for="(value, key, index) in filter"
+        :key="`${key}-${index}`"
+      >
+        <input-select-field
+          v-model="value.value"
+          :label="`${key}`"
+          :options="value.options"
+          :multiple="value.multiple"
+          :use-chips="value.multiple"
+          :emit-value="true"
+          :map-options="true"
+          :clearable="true"
         >
-          <div class="q-pb-sm text-subtitle1 text-capitalize">{{ key }}</div>
-          <q-option-group
-            v-model="filter[key]['value']"
-            :options="value.options"
-            color="primary"
-            inline
-            :type="filter[key]['type']"
+          <template
+            v-if="key.toString() === 'base star'"
+            v-slot:selected-item="{ opt, index, tabindex, removeAtIndex }"
           >
-            <template v-slot:label="opt">
-              <template v-if="key.toString() === 'base star'">
-                <q-icon
-                  v-for="(n, i) in opt.value"
-                  :key="`${n.label}-${i}`"
-                  name="star"
-                  color="yellow"
-                  size="xs"
-                />
-              </template>
-              <span class="text-capitalize" v-else>{{ opt.label }}</span>
-            </template>
-          </q-option-group>
-        </q-card-section>
-      </div>
+            <q-chip
+              removable
+              @remove="removeAtIndex(index)"
+              :tabindex="tabindex"
+            >
+              <q-icon
+                v-for="(n, i) in opt.value"
+                :key="`${n.label}-${i}`"
+                name="star"
+                color="yellow"
+                size="xs"
+              />
+            </q-chip>
+          </template>
+        </input-select-field>
+      </q-card-section>
       <q-card-actions align="right">
-        <q-btn label="Close" color="secondary" v-close-popup />
+        <q-btn label="Close" color="negative" v-close-popup />
+        <q-btn label="Reset" color="warning" @click="resetFilter" />
         <q-btn label="Save" color="primary" @click="saveFilter" v-close-popup />
       </q-card-actions>
     </q-card>
@@ -68,26 +74,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, ref } from 'vue'
+import { defineComponent, ref } from 'vue'
+import InputSelectField from './InputSelectField.vue'
 
 export default defineComponent({
+  components: {
+    InputSelectField
+  },
   emits: ['saveFilter'],
   props: {
     filterValues: {
+      type: Object,
+      required: true
+    },
+    defaultValues: {
       type: Object,
       required: true
     }
   },
   setup(props, { emit }) {
     const dialog = ref(false)
-    const filter = reactive(JSON.parse(JSON.stringify(props.filterValues)))
+    const filter = ref(JSON.parse(JSON.stringify(props.filterValues)))
 
-    const saveFilter = () => emit('saveFilter', filter)
+    const saveFilter = () => emit('saveFilter', filter.value)
+    const resetFilter = () => {
+      filter.value = props.defaultValues
+    }
 
     return {
       dialog,
       filter,
-      saveFilter
+      saveFilter,
+      resetFilter
     }
   }
 })

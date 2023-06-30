@@ -83,7 +83,7 @@ const pagination: object = {
 const filterValues = reactive({
   'squad type': {
     value: '',
-    type: 'radio',
+    multiple: false,
     options: [
       { label: 'All', value: '' },
       { label: 'Striker', value: 'striker' },
@@ -92,7 +92,7 @@ const filterValues = reactive({
   },
   'base star': {
     value: [3, 2, 1],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: '', value: 3 },
       { label: '', value: 2 },
@@ -113,7 +113,7 @@ const filterValues = reactive({
       'valkyrie',
       'etc'
     ],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Abydos', value: 'abydos' },
       { label: 'Arius', value: 'arius' },
@@ -130,7 +130,7 @@ const filterValues = reactive({
   },
   position: {
     value: ['front', 'middle', 'back'],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Front', value: 'front' },
       { label: 'Middle', value: 'middle' },
@@ -139,7 +139,7 @@ const filterValues = reactive({
   },
   role: {
     value: ['attacker', 'tanker', 'supporter', 'healer', 'tactical'],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Attacker', value: 'attacker' },
       { label: 'Tanker', value: 'tanker' },
@@ -150,7 +150,7 @@ const filterValues = reactive({
   },
   'bullet type': {
     value: ['explosion', 'penetration', 'mystic'],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Explosion', value: 'explosion' },
       { label: 'Penetration', value: 'penetration' },
@@ -159,7 +159,7 @@ const filterValues = reactive({
   },
   'armor type': {
     value: ['light armor', 'heavy armor', 'special armor'],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Light Armor', value: 'light armor' },
       { label: 'Heavy Armor', value: 'heavy armor' },
@@ -168,7 +168,7 @@ const filterValues = reactive({
   },
   'weapon type': {
     value: ['ar', 'gl', 'hg', 'mg', 'mt', 'rg', 'rl', 'sg', 'smg', 'sr'],
-    type: 'checkbox',
+    multiple: true,
     options: [
       { label: 'Assault Rifle', value: 'ar' },
       { label: 'Grenade Launcher', value: 'gl' },
