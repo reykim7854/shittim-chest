@@ -26,6 +26,7 @@
           <template v-slot:right>
             <button-filter
               :filter-values="filterValues"
+              :default-values="defaultValues"
               @save-filter="handleSaveFilter"
             />
             <button-sort
@@ -49,7 +50,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, reactive } from 'vue'
 import { fetchStudents } from 'pages/student/student'
 import {
   columns,
@@ -89,11 +90,13 @@ export default defineComponent({
       'List of available students in Blue Archive global version'
     )
     const { loading, students, studentImages } = fetchStudents()
+    const defaultValues = reactive(JSON.parse(JSON.stringify(filterValues)))
 
     return {
+      loading,
       students,
       studentImages,
-      loading,
+      defaultValues,
       name,
       sortBy,
       isAsc,
