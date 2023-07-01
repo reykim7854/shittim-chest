@@ -4,7 +4,6 @@
       :grid="true"
       :row="students"
       row-key="id"
-      :loading="loading"
       :columns="columns"
       :hide-header="true"
       :visible-columns="visibleColumns"
@@ -50,8 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from 'vue'
-import { fetchStudents } from 'pages/student/student'
+import { defineComponent, computed } from 'vue'
 import {
   columns,
   visibleColumns,
@@ -65,6 +63,7 @@ import {
   handleSaveFilter,
   filterMethod
 } from 'pages/student/student-data-table'
+import { useStudentStore } from 'src/stores/student-store'
 import { useMetaStore } from 'src/stores/meta-store'
 import StudentList from 'src/components/student/TableStudentList.vue'
 import StudentCardImage from 'src/components/student/StudentCardImage.vue'
@@ -83,17 +82,25 @@ export default defineComponent({
     ButtonFilter,
     ButtonSort
   },
+  preFetch() {
+    const studentStore = useStudentStore()
+    if (studentStore.getStudents.length <= 0) {
+      studentStore.setStudents()
+    }
+  },
   setup() {
     const metaStore = useMetaStore()
     metaStore.setMetaData(
       'Students',
       'List of available students in Blue Archive global version'
     )
-    const { loading, students, studentImages } = fetchStudents()
-    const defaultValues = reactive(JSON.parse(JSON.stringify(filterValues)))
+
+    const studentStore = useStudentStore()
+    const students = computed(() => studentStore.getStudents)
+    const studentImages = computed(() => studentStore.getStudentImages)
+    const defaultValues = JSON.parse(JSON.stringify(filterValues))
 
     return {
-      loading,
       students,
       studentImages,
       defaultValues,
