@@ -6,8 +6,7 @@ import { StudentListAttributes } from 'src/models/StudentModel'
 export const useStudentStore = defineStore('student', {
   state: () => ({
     students: [] as StudentListAttributes[],
-    studentImages,
-    studentsLoading: false
+    studentImages
   }),
   getters: {
     getStudents: (state) => state.students,
@@ -16,7 +15,6 @@ export const useStudentStore = defineStore('student', {
   actions: {
     async setStudents() {
       try {
-        this.$patch({ studentsLoading: true })
         const {
           data: { data },
           status
@@ -30,8 +28,6 @@ export const useStudentStore = defineStore('student', {
         }
       } catch (error) {
         console.error(error)
-      } finally {
-        this.$patch({ studentsLoading: false })
       }
     }
   }
