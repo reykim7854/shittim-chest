@@ -26,6 +26,12 @@
               color="yellow"
             />
           </template>
+          <template
+            v-else-if="
+              sortBy === 'urban' || sortBy === 'outdoor' || sortBy === 'indoor'
+            "
+            >{{ formatSortByValue(row.terrain[sortBy].DamageDealt) }}</template
+          >
           <template v-else>{{ formatSortByValue(row[sortBy]) }}</template>
         </div>
       </template>

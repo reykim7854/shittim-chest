@@ -44,13 +44,6 @@ const columns = [
     sortable: true
   },
   {
-    name: 'urban',
-    required: true,
-    label: 'Urban Terrain',
-    field: (row: any) => row.terrain.urban.DamageDealt,
-    sortable: true
-  },
-  {
     name: 'bulletType',
     required: true,
     label: 'Bullet Type',
@@ -70,6 +63,27 @@ const columns = [
     label: 'Weapon Type',
     field: (row: { weaponType: string }) => row.weaponType,
     sortable: true
+  },
+  {
+    name: 'urban',
+    required: true,
+    label: 'Urban Terrain',
+    field: (row: any) => row.terrain.urban.DamageDealt,
+    sortable: true
+  },
+  {
+    name: 'outdoor',
+    required: true,
+    label: 'Outdoor Terrain',
+    field: (row: any) => row.terrain.outdoor.DamageDealt,
+    sortable: true
+  },
+  {
+    name: 'indoor',
+    required: true,
+    label: 'Indoor Terrain',
+    field: (row: any) => row.terrain.indoor.DamageDealt,
+    sortable: true
   }
 ]
 
@@ -83,7 +97,7 @@ const pagination: object = {
 const filterValues = reactive({
   'squad type': {
     value: '',
-    multiple: false,
+    chips: false,
     options: [
       { label: 'All', value: '' },
       { label: 'Striker', value: 'striker' },
@@ -93,6 +107,8 @@ const filterValues = reactive({
   'base star': {
     value: [3, 2, 1],
     multiple: true,
+    chips: true,
+    icon: true,
     options: [
       { label: '', value: 3 },
       { label: '', value: 2 },
@@ -114,6 +130,7 @@ const filterValues = reactive({
       'etc'
     ],
     multiple: true,
+    chips: true,
     options: [
       { label: 'Abydos', value: 'abydos' },
       { label: 'Arius', value: 'arius' },
@@ -131,6 +148,7 @@ const filterValues = reactive({
   position: {
     value: ['front', 'middle', 'back'],
     multiple: true,
+    chips: true,
     options: [
       { label: 'Front', value: 'front' },
       { label: 'Middle', value: 'middle' },
@@ -138,37 +156,41 @@ const filterValues = reactive({
     ]
   },
   role: {
-    value: ['attacker', 'tanker', 'supporter', 'healer', 'tactical'],
+    value: ['dealer', 'tank', 'support', 'healer', 't.s.'],
     multiple: true,
+    chips: true,
     options: [
-      { label: 'Attacker', value: 'attacker' },
-      { label: 'Tanker', value: 'tanker' },
-      { label: 'Supporter', value: 'supporter' },
+      { label: 'Dealer', value: 'dealer' },
+      { label: 'Tank', value: 'tank' },
+      { label: 'Support', value: 'support' },
       { label: 'Healer', value: 'healer' },
-      { label: 'Tactical', value: 'tactical' }
+      { label: 'Tactical Support', value: 't.s.' }
     ]
   },
   'bullet type': {
-    value: ['explosion', 'penetration', 'mystic'],
+    value: ['explosive', 'piercing', 'mystic'],
     multiple: true,
+    chips: true,
     options: [
-      { label: 'Explosion', value: 'explosion' },
-      { label: 'Penetration', value: 'penetration' },
+      { label: 'Explosive', value: 'explosive' },
+      { label: 'Piercing', value: 'piercing' },
       { label: 'Mystic', value: 'mystic' }
     ]
   },
   'armor type': {
-    value: ['light armor', 'heavy armor', 'special armor'],
+    value: ['light', 'heavy', 'special'],
     multiple: true,
+    chips: true,
     options: [
-      { label: 'Light Armor', value: 'light armor' },
-      { label: 'Heavy Armor', value: 'heavy armor' },
-      { label: 'Special Armor', value: 'special armor' }
+      { label: 'Light', value: 'light' },
+      { label: 'Heavy', value: 'heavy' },
+      { label: 'Special', value: 'special' }
     ]
   },
   'weapon type': {
     value: ['ar', 'gl', 'hg', 'mg', 'mt', 'rg', 'rl', 'sg', 'smg', 'sr'],
     multiple: true,
+    chips: true,
     options: [
       { label: 'Assault Rifle', value: 'ar' },
       { label: 'Grenade Launcher', value: 'gl' },
@@ -224,8 +246,20 @@ const filterMethod = (rows: readonly any[], terms: any) => {
   })
 
   filtered.sort((a, b) => {
-    const valueA = a[sortBy.value]
-    const valueB = b[sortBy.value]
+    let valueA: any
+    let valueB: any
+
+    if (
+      sortBy.value === 'urban' ||
+      sortBy.value === 'outdoor' ||
+      sortBy.value === 'indoor'
+    ) {
+      valueA = parseInt(a.terrain[sortBy.value].DamageDealt)
+      valueB = parseInt(b.terrain[sortBy.value].DamageDealt)
+    } else {
+      valueA = a[sortBy.value]
+      valueB = b[sortBy.value]
+    }
 
     if (valueA < valueB) {
       return isAsc.value ? -1 : 1
