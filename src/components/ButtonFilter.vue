@@ -4,11 +4,13 @@
   top: 0
   background-color: inherit
   z-index: 1
+  box-shadow: 0 0.5px 5px 0px #000000
 
 .q-card__actions
   position: sticky
   bottom: 0
   background-color: inherit
+  box-shadow: 0 -0.5px 5px 0px #000000
 
 .filter-card
   width: 100%
@@ -38,14 +40,14 @@
           v-model="value.value"
           :label="`${key}`"
           :options="value.options"
-          :multiple="value.multiple"
-          :use-chips="value.multiple"
+          :multiple="!!value.multiple"
+          :use-chips="!!value.multiple"
           :emit-value="true"
           :map-options="true"
           :clearable="true"
         >
           <template
-            v-if="key.toString() === 'base star'"
+            v-if="!!value.chips"
             v-slot:selected-item="{ opt, index, tabindex, removeAtIndex }"
           >
             <q-chip
@@ -53,13 +55,16 @@
               @remove="removeAtIndex(index)"
               :tabindex="tabindex"
             >
-              <q-icon
-                v-for="(n, i) in opt.value"
-                :key="`${n.label}-${i}`"
-                name="star"
-                color="yellow"
-                size="xs"
-              />
+              <template v-if="!!value.icon">
+                <q-icon
+                  v-for="(n, i) in opt.value"
+                  :key="`${n.label}-${i}`"
+                  name="star"
+                  color="yellow"
+                  size="xs"
+                />
+              </template>
+              <template v-else>{{ opt.label }}</template>
             </q-chip>
           </template>
         </input-select-field>

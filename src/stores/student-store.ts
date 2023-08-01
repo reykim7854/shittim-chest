@@ -15,10 +15,7 @@ export const useStudentStore = defineStore('student', {
   actions: {
     async setStudents() {
       try {
-        const {
-          data: { data },
-          status
-        } = await getStudents()
+        const { data, status } = await getStudents()
         if (status < 300) {
           this.$patch({
             students: data
